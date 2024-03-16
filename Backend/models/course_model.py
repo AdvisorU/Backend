@@ -3,7 +3,7 @@ from django.db import models
 from .base_model import BaseModel
 
 class Course(BaseModel):
-    major = models.CharField(max_length = 255, db_index = True)
+    major = models.ForeignKey('Major', on_delete = models.CASCADE, related_name = 'course_major', db_index = True)
     number = models.CharField(max_length = 255, db_index = True)
     name = models.CharField(max_length = 255, db_index = True)
     description = models.TextField(null = True)

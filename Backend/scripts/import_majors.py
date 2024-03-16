@@ -13,6 +13,11 @@ The goal of the undergraduate program in computer science is to teach students t
         'name': 'Computer Science, BSCS', 
         'short_name': 'BSCS',
         'description': 'The Bachelor of Science in Computer Science focuses on the fundamentals of program design, software development, computer organization, systems and networks, theories of computation, principles of languages, and advanced algorithms and data. '
+    }, 
+    {
+        'name': 'Information Science',
+        'short_name': 'IS',
+        'description': ''
     }
 ]
 

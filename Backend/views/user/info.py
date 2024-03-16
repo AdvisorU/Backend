@@ -9,8 +9,8 @@ class Handler(APIView):
     @check_params({})
     def get(self, request, params):
         return JsonResponse({
-            'status': 0, 
-            'msg': '获取用户信息成功', 
+            'code': 0, 
+            'message': '获取用户信息成功', 
             'data': {
                 'id': request.user.id, 
                 'nickname': request.user.nickname, 
@@ -51,14 +51,14 @@ class Handler(APIView):
             request.user.save()
 
             return JsonResponse({
-                'status': 0, 
-                'msg': '用户信息修改成功', 
+                'code': 0, 
+                'message': '用户信息修改成功', 
                 'data': None, 
             })
         except Exception as e:
             print(e)
             return JsonResponse({
-                'status': 0, 
-                'msg': '用户信息修改失败：' + str(e), 
+                'code': 0, 
+                'message': '用户信息修改失败：' + str(e), 
                 'data': None, 
             })

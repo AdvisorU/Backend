@@ -55,6 +55,6 @@ class JWTAuthenticationMiddleware:
         # 未通过登录态验证，返回未授权的响应
         return JsonResponse({
             'code': 401, 
-            'msg': 'Unauthorized',
+            'message': 'Unauthorized',
             'data': None, 
         }, status = 401)

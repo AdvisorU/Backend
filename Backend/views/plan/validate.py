@@ -19,8 +19,8 @@ class Handler(APIView):
 
         if not major.exists():
             return JsonResponse({
-                'status': 1, 
-                'msg': 'Major not found',
+                'code': 1, 
+                'message': 'Major not found',
             })
         
         major = major.first()

@@ -39,8 +39,8 @@ class Handler(APIView):
 
             # 将 JWT 设置到 Cookie 中
             response = JsonResponse({
-                'status': 0,
-                'msg': 'Login success',
+                'code': 0,
+                'message': 'Login success',
                 'data': None,
             })
             response.set_cookie('SessionID', jwt_token, expires = jwt_auth.get_cookie_expiretime(), httponly = True, secure = True, samesite = 'Lax')
@@ -48,7 +48,7 @@ class Handler(APIView):
             return response
 
         return JsonResponse({
-            'status': 1, 
-            'msg': err_msg, 
+            'code': 1, 
+            'message': err_msg, 
             'data': None, 
         })

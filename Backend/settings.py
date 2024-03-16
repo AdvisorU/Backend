@@ -180,3 +180,8 @@ SNOWFLAKE = {
     'WORKER_ID': int(os.environ.get('SNOWFLAKE_WORKER_ID')),
     'DATACENTER_ID': int(os.environ.get('SNOWFLAKE_DATACENTER_ID')),
 }
+
+# Langchain
+
+from Backend import langchain
+langchain.init()

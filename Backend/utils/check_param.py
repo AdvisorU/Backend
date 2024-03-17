@@ -62,15 +62,15 @@ def check_params(param_dict):
             if missing_required_params:
                 # 处理必填参数的缺失
                 return JsonResponse({
-                    'status': 1, 
-                    'msg': "Missing params: {}".format(", ".join(missing_required_params)),
+                    'code': 1, 
+                    'message': "Missing params: {}".format(", ".join(missing_required_params)),
                 })
 
             if invalid_params:
                 # 处理参数的非法情况
                 return JsonResponse({
-                    'status': 1, 
-                    'msg': "Invalid params: {}".format(", ".join(invalid_params)),
+                    'code': 1, 
+                    'message': "Invalid params: {}".format(", ".join(invalid_params)),
                 })
 
             kwargs['params'] = parsed_params  # 将解析出来的参数传递给视图函数

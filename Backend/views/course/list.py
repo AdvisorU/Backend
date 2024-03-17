@@ -42,7 +42,7 @@ class Handler(APIView):
         ]
 
         return JsonResponse({
-            'status': 0, 
-            'msg': 'Courses found',
+            'code': 0, 
+            'message': 'Courses found',
             'data': courses,
         })

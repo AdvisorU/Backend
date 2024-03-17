@@ -10,6 +10,7 @@ class Course(BaseModel):
     credit_hours = models.IntegerField(null = True)
     credit_hours_min = models.IntegerField(null = True)
     credit_hours_max = models.IntegerField(null = True)
+    keywords = models.CharField(max_length = 255, db_index = True)
 
     def to_dict(self):
         return {

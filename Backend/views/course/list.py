@@ -5,10 +5,16 @@ from django.db.models import Q
 
 from Backend.utils.check_param import check_params
 from Backend.models.course_model import Course
+from Backend.models.major_model import Major
 
 class Handler(APIView):
     @check_params({
-        'major': {}, 
+        'major': {
+            'required': False, 
+        }, 
+        'keywords': {
+            'required': False,
+        }, 
         'offset': {
             'required': False, 
             'type': 'int',
@@ -25,19 +31,28 @@ class Handler(APIView):
     })
     def get(self, request, params):
         # search course by given conditions
-        query = Q(major=params['major'])
+        query = Q()
+
+        if 'major' in params:
+            major = Major.objects.filter(short_name = params['major']).first()
+
+            # check if major exists
+            if not major:
+                return JsonResponse({
+                    'code': 1, 
+                    'message': 'Major not found', 
+                    'data': None, 
+                })
+            
+            query &= Q(major = major)
+
+        if 'keywords' in params:
+            query &= Q(keywords__contains = params['keywords'])
         
         # search course by given conditions
         courses = Course.objects.filter(query)[params['offset']:params['offset']+params['limit']]
         courses = [
-            {
-                'id': course.id,
-                'major': course.major,
-                'number': course.number,
-                'name': course.name,
-                'description': course.description,
-                'credit_hours': course.credit_hours,
-            }
+            course.to_dict()
             for course in courses
         ]
 

@@ -6,6 +6,7 @@ from Backend.models.chat_model import Chat, ChatComment, ChatCommentType
 import json
 from Backend.langchain.agents import agent
 from Backend.langchain.memories import memory
+from langchain.prompts import PromptTemplate
 
 class Handler(APIView):
     @check_params({
@@ -105,7 +106,9 @@ class Handler(APIView):
             Question: {input}
             Thought:{agent_scratchpad}'''
         
-        agent_executer = agent.create_agent(history, template)
+        prompt = PromptTemplate.from_template(template)
+        
+        agent_executer = agent.create_agent(memory = history, prompt = prompt)
         
         agent_executer.invoke(input = {
             'input': params['content'],

@@ -13,7 +13,10 @@ def create_agent(memory, prompt):
     )
     return AgentExecutor.from_agent_and_tools(
         agent = agent, 
-        tools = tools, 
+        tools = [
+            tools.courses_from_catalog_retriever_tool,
+            tools.plan_of_study_retriever_tool
+            ], 
         verbose = True, 
         memory = memory, 
         handle_parsing_errors = True

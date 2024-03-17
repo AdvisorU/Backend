@@ -69,6 +69,7 @@ class Handler(APIView):
         
         history = memory.create_memory(chat_comments)
         
+        
         template = '''You are a computer science academic advisor of a university. Answer the following questions about course selection from students as best you can. You can have multiple chat with the student. 
 
             As an advisor you should know that there usually are:
@@ -108,7 +109,7 @@ class Handler(APIView):
         
         prompt = PromptTemplate.from_template(template)
         
-        agent_executer = agent.create_agent(memory = history, prompt = prompt)
+        agent_executer = agent.create_agent(history, prompt)
         
         agent_executer.invoke(input = {
             'input': params['content'],

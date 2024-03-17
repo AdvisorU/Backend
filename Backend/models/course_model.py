@@ -41,7 +41,7 @@ class CourseCoRequisite(BaseModel):
     def to_dict(self):
         return {
             'id': self.co_requisite.id,
-            'major': self.co_requisite.major,
+            'major': self.co_requisite.major.to_dict(),
             'number': self.co_requisite.number,
             'name': self.co_requisite.name,
             'description': self.co_requisite.description,

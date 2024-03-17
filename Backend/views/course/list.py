@@ -51,13 +51,29 @@ class Handler(APIView):
         
         # search course by given conditions
         courses = Course.objects.filter(query)[params['offset']:params['offset']+params['limit']]
-        courses = [
-            course.to_dict()
-            for course in courses
-        ]
+        courses_data = []
+        
+        for course in courses:
+            course_data = course.to_dict()
+
+            # find course's co-requisites
+            course_co_requisites = course.course_co_requisites_course.all()
+            course_data['co_requisites'] = [
+                course_co_requisite.to_dict()
+                for course_co_requisite in course_co_requisites
+            ]
+
+            # find course's pre-requisites
+            course_pre_requisites = course.course_pre_requisites_course.all()
+            course_data['pre_requisites'] = [
+                course_pre_requisite.to_dict()
+                for course_pre_requisite in course_pre_requisites
+            ]
+            
+            courses_data.append(course_data)
 
         return JsonResponse({
             'code': 0, 
             'message': 'Courses found',
-            'data': courses,
+            'data': courses_data,
         })

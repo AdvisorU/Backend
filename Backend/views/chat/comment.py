@@ -24,7 +24,16 @@ class Handler(APIView):
         }
     })
     def get(self, request, params):
-        chat = Chat.objects.get(id = params['id'])
+        chat = Chat.objects.filter(id = params['id']).first()
+        
+        # check if chat exists
+        if not chat:
+            return JsonResponse({
+                'code': 1, 
+                'message': 'Chat not found', 
+                'data': None, 
+            })
+        
         chat_comments = ChatComment.objects.filter(chat = chat).order_by('-created_at')[params['offset']:params['offset'] + params['limit']]
         return JsonResponse({
             'code': 0, 

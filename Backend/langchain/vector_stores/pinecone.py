@@ -7,29 +7,22 @@ from langchain_pinecone import PineconeVectorStore
 
 from Backend.langchain import models
 
-pinecone_client = None
-
-def init_pinecone_client():
+def init_pinecone_client(api_key):
     return Pinecone(
-        api_key = os.getenv('PINECONE_API_KEY'),
+        api_key = api_key,
     )
 
-def get_index(index_name):
-    global pinecone_client
-
-    if pinecone_client is None:
-        print('Pinecone client not initialized')
-        return None
-
+def get_index(index_name, pinecone_client):
     return pinecone_client.Index(
         name = index_name
     )
 
 def get_courses_from_catalog_index():
-    return get_index(os.getenv('PINECONE_INDEX_COURSES_FROM_CATALOG'))
+    return get_index(os.getenv('PINECONE_INDEX_COURSES_FROM_CATALOG'), init_pinecone_client(os.getenv('PINECONE_API_KEYCFC')))
 
 def get_plan_of_study_index():
-    return get_index(os.getenv('PINECONE_INDEX_PLAN_OF_STUDY'))
+    return get_index(os.getenv('PINECONE_INDEX_PLAN_OF_STUDY'), init_pinecone_client(os.getenv('PINECONE_API_KEYPOS')))
+
 
 def get_store(index):
     embedding_client = models.embedding_client

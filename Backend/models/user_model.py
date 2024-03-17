@@ -35,3 +35,12 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return str(self.id)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'nickname': self.nickname,
+            'icon': self.icon,
+            'registration_time': self.registration_time,
+        }

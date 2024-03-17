@@ -38,7 +38,7 @@ class Handler(APIView):
                 'data': None, 
             })
         
-        chat_comments = ChatComment.objects.filter(chat = chat).order_by('-created_at')[params['offset']:params['offset'] + params['limit']]
+        chat_comments = ChatComment.objects.filter(chat = chat).order_by('created_at')[params['offset']:params['offset'] + params['limit']]
         return JsonResponse({
             'code': 0, 
             'message': 'Chat comments found',
@@ -69,8 +69,7 @@ class Handler(APIView):
         
         history = memory.create_memory(chat_comments)
         
-        
-        template = '''You are a computer science academic advisor of a university. Answer the following questions about course selection from students as best you can. You can have multiple chat with the student. 
+        template = '''You are a computer science academic advisor of a university. Answer the question from the student as best you can. 
 
             As an advisor you should know that there usually are:
             - 4 years of college
@@ -81,18 +80,21 @@ class Handler(APIView):
             - plan-of-study is used when you want to know when a student that's majoring in computer science should take a course.
             - course_from_catalog is used when you want to search for alternative courses for plan-of-study.
 
-            Use the following format, you can skip some of steps if you cannot finish your mission with the information you currently have:
+            Use the following format:
             "Question": "the input question you must answer",
             "Thought": "you should always think about what to do",
+            (jump to "Final Answer" if you want to ask more questions, do not go to "Action" if you want to ask more questions)
             "Action": "don't ask more questions, assume from the query given. for the action to take, should be one of [{tool_names}]",
             "Action Input": "the input to the action",
             "Observation": "the result of the action",
             ... (this Thought/Action/Action Input/Observation can repeat 5 times)
             "Thought": "I now know the final answer",
-            "Final Answer": "in json format"
+            "Final Answer": "arragement your final answer",
+            
+            **DO NOT continue when you stuck at "Action", or "Action" is None or Invalid Format or "Action Input" is None, you should immediately ask the student with `"Final Answer": "in json format"`.**
 
-            The answer should be in compact json format, including following fields:
-            - msg: your final answer
+            The "Final Answer" should be in compact json format, including following fields:
+            - msg: your final answer and **you MUST summarize of the data (if exist) below**
             - data: the data in an array you used to get the answer
                 - 0
                     - major: the major of the course
@@ -100,7 +102,7 @@ class Handler(APIView):
                 - 1
                 ...
                 
-            If the user says something not related to your job as an academic advisor, return a message that explain you cannot answer the question. 
+            If the user says something not related to your job as an academic advisor, reply that you cannot answer the question with json format. 
 
             Begin!
 
@@ -111,35 +113,42 @@ class Handler(APIView):
         
         agent_executer = agent.create_agent(history, prompt)
         
-        agent_executer.invoke(input = {
-            'input': params['content'],
-        })
-        
-        ChatComment.objects.create(
-            chat = chat,
-            user = request.user,
-            role = ChatCommentType.USER,
-            content = params['content'],
-        )
-        
-        content = json.loads(history.chat_memory.messages[-1].content)
-        msg = content['msg']
-        data = None
-        if 'data' in content:
-            data = content['data']
-        
-        ChatComment.objects.create(
-            chat = chat,
-            role = ChatCommentType.ASSISTANT,
-            content = msg, 
-            extra = data,
-        )
-        
-        return JsonResponse({
-            'code': 0, 
-            'message': 'Chat comment created', 
-            'data': {
-                'msg': msg, 
-                'data': data,
-            }
-        })
+        try:
+            agent_executer.invoke(input = {
+                'input': params['content'],
+            })
+            
+            content = json.loads(history.chat_memory.messages[-1].content)
+            msg = content['msg']
+            data = None
+            if 'data' in content:
+                data = content['data']
+            
+            ChatComment.objects.create(
+                chat = chat,
+                user = request.user,
+                role = ChatCommentType.USER,
+                content = params['content'],
+            )
+            
+            answer = ChatComment.objects.create(
+                chat = chat,
+                role = ChatCommentType.ASSISTANT,
+                content = msg, 
+                extra = data,
+            )
+            
+            return JsonResponse({
+                'code': 0, 
+                'message': 'Chat comment created', 
+                'data': answer.to_dict(),
+            })
+        except Exception as e:
+            return JsonResponse({
+                'code': 0, 
+                'message': 'Chat comment failed', 
+                'data': {
+                    'role': 'ASSISTANT',
+                    'content': "Sorry, I cannot answer the question",
+                },
+            })

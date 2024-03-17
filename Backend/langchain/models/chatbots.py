@@ -10,6 +10,6 @@ def init_chat_client():
         api_key = os.getenv('OPENAI_API_KEY'),
         api_version = os.getenv('OPENAI_API_VERSION'),
         model = os.getenv('OPENAI_GPT35_MODEL'), 
-        temperature = 0,
-        max_tokens = 15000,
+        temperature = 0.2,
+        max_tokens = 3200,
     )

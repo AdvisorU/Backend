@@ -9,7 +9,7 @@ class Chat(BaseModel):
     
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': str(self.id),
             'title': self.title,
             'user': self.user.to_dict(),
             'comment_count': self.comment_count,
@@ -32,7 +32,7 @@ class ChatComment(BaseModel):
     
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': str(self.id),
             'chat': self.chat.to_dict(),
             'user': self.user.to_dict() if self.user else None,
             'role': self.role,

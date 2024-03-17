@@ -38,7 +38,7 @@ class User(AbstractBaseUser):
     
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': str(self.id),
             'email': self.email,
             'nickname': self.nickname,
             'icon': self.icon,

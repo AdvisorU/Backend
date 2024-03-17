@@ -10,7 +10,7 @@ class Major(BaseModel):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': str(self.id),
             'name': self.name,
             'short_name': self.short_name,
         }

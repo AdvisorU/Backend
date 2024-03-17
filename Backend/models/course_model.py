@@ -14,7 +14,7 @@ class Course(BaseModel):
     def to_dict(self):
         return {
             'id': self.id,
-            'major': self.major,
+            'major': self.major.to_dict(),
             'number': self.number,
             'name': self.name,
             'description': self.description,

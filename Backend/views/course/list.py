@@ -6,6 +6,7 @@ from django.db.models import Q
 from Backend.utils.check_param import check_params
 from Backend.models.course_model import Course
 from Backend.models.major_model import Major
+from Backend.utils import string
 
 class Handler(APIView):
     @check_params({
@@ -47,7 +48,7 @@ class Handler(APIView):
             query &= Q(major = major)
 
         if 'keywords' in params:
-            query &= Q(keywords__contains = params['keywords'])
+            query &= Q(keywords__contains = string.seperate_letter_number(params['keywords'].lower()))
         
         # search course by given conditions
         courses = Course.objects.filter(query)[params['offset']:params['offset']+params['limit']]
